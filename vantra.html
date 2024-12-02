@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Quiz App</title>
+  
+  <!-- Internal CSS -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+
+    .quiz-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #choices {
+      margin-top: 20px;
+    }
+
+    .choice-button {
+      display: block;
+      padding: 10px;
+      margin: 5px 0;
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .choice-button:hover {
+      background-color: #e4e4e4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <div id="question-container">
+      <h2 id="question">Question will go here</h2>
+      <div id="choices"></div>
+    </div>
+    <button id="next-button">Next Question</button>
+    <div id="score-container" style="display: none;">
+      <h3>Your Score: <span id="final-score"></span></h3>
+      <button id="restart-button">Restart</button>
+    </div>
+  </div>
+
+  <!-- Internal JavaScript -->
+  <script>
+    // Quiz Questions
+    const questions = [
+      {
+        question: "What is the capital of France?",
+        choices: ["Berlin", "Madrid", "Paris", "Rome"],
+        correctAnswer: "Paris"
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        choices: ["Earth", "Mars", "Jupiter", "Saturn"],
+        correctAnswer: "Mars"
+      },
+      {
+        question: "What is the largest ocean on Earth?",
+        choices: ["Atlantic", "Indian", "Arctic", "Pacific"],
+        correctAnswer: "Pacific"
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionContainer = document.getElementById('question');
+    const choicesContainer = document.getElementById('choices');
+    const nextButton = document.getElementById('next-button');
+    const scoreContainer = document.getElementById('score-container');
+    const finalScore = document.getElementById('final-score');
+    const restartButton = document.getElementById('restart-button');
+
+    // Display the current question and choices
+    function displayQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      questionContainer.textContent = currentQuestion.question;
+      choicesContainer.innerHTML = '';
+      
+      currentQuestion.choices.forEach(choice => {
+        const choiceButton = document.createElement('button');
+        choiceButton.textContent = choice;
+        choiceButton.classList.add('choice-button');
+        choiceButton.addEventListener('click', () => checkAnswer(choice));
+        choicesContainer.appendChild(choiceButton);
+      });
+    }
+
+    // Check if the selected answer is correct
+    function checkAnswer(choice) {
+      const currentQuestion = questions[currentQuestionIndex];
+      if (choice === currentQuestion.correctAnswer) {
+        score++;
+      }
+      nextButton.disabled = false;
+    }
+
+    // Move to the next question or finish the quiz
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        displayQuestion();
+        nextButton.disabled = true;
+      } else {
+        showFinalScore();
+      }
+    }
+
+    // Show the final score
+    function showFinalScore() {
+      questionContainer.style.display = 'none';
+      choicesContainer.style.display = 'none';
+      nextButton.style.display = 'none';
+      scoreContainer.style.display = 'block';
+      finalScore.textContent = score;
+    }
+
+    // Restart the quiz
+    function restartQuiz() {
+      score = 0;
+      currentQuestionIndex = 0;
+      questionContainer.style.display = 'block';
+      choicesContainer.style.display = 'block';
+      nextButton.style.display = 'block';
+      scoreContainer.style.display = 'none';
+      displayQuestion();
+      nextButton.disabled = true;
+    }
+
+    nextButton.addEventListener('click', nextQuestion);
+    restartButton.addEventListener('click', restartQuiz);
+
+    // Initialize the quiz
+    displayQuestion();
+    nextButton.disabled = true;
+  </script>
+
+</body>
+</html>
